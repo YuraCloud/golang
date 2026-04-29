@@ -32,7 +32,7 @@
             "name": "Command Run",
             "description": "The command that will be executed to start your application.",
             "env_variable": "CMD_RUN",
-            "default_value": "go run main.go",
+            "default_value": "go build -o app main.go && exec ./app",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|string",
