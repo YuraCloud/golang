@@ -11,10 +11,10 @@ This repository contains a custom Pterodactyl Egg for running Golang application
 1. **Docker Image**:
    - Build and push the Docker image to your GitHub Container Registry:
      ```bash
-     docker build -t ghcr.io/yuracloud/golang:latest ./docker\ image
+     docker build -t ghcr.io/yuracloud/golang:latest .
      docker push ghcr.io/yuracloud/golang:latest
      ```
-   - Update the `docker_images` section in `egg/golang.json` with your image URL.
+   - Update the `docker_images` section in `golang.json` with your image URL.
 
 2. **Egg Installation**:
    - Go to your Pterodactyl Panel -> Nests -> Import Egg.
