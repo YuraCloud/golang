@@ -8,4 +8,5 @@ ENV         USER=container HOME=/home/container
 WORKDIR     /home/container
 
 COPY        ./entrypoint.sh /entrypoint.sh
-CMD         [ "/bin/ash", "/entrypoint.sh" ]
+# Using ENTRYPOINT with exec-form to ensure signals are passed to entrypoint.sh
+ENTRYPOINT  ["/bin/bash", "/entrypoint.sh"]
