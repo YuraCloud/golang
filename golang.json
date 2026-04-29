@@ -5,15 +5,15 @@
         "update_url": null
     },
     "exported_at": "2024-06-02T14:43:56+00:00",
-    "name": "Golang Custom (Optimized)",
+    "name": "Golang Custom (Universal)",
     "author": "antigravity@google.com",
-    "description": "Flexible Golang egg with Auto-Update, Build support, and Multi-file execution.",
+    "description": "Universal Golang egg with Auto-Update and fully customizable CMD_RUN command.",
     "features": null,
     "docker_images": {
         "ghcr.io/yuracloud/golang:latest": "ghcr.io/yuracloud/golang:latest"
     },
     "file_denylist": [],
-    "startup": "if [ -d .git ] && [ \"${AUTO_UPDATE}\" == \"1\" ]; then git pull; fi; if [ -f go.mod ]; then go mod tidy; fi; if [ \"${GO_RUN_MODE}\" == \"build\" ]; then go build -ldflags='-s -w' -o app ${MAIN_FILE} && chmod +x app && ./app; else go run ${MAIN_FILE}; fi",
+    "startup": "if [ -d .git ] && [ \"${AUTO_UPDATE}\" == \"1\" ]; then git pull; fi; if [ -f go.mod ]; then go mod tidy; fi; ${CMD_RUN}",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"Server started on\"\r\n}",
@@ -29,23 +29,13 @@
     },
     "variables": [
         {
-            "name": "Main File(s)",
-            "description": "Main Go file(s) to run. You can specify multiple files separated by spaces (e.g., 'main.go task.go').",
-            "env_variable": "MAIN_FILE",
-            "default_value": "main.go",
+            "name": "Command Run",
+            "description": "The command that will be executed to start your application.",
+            "env_variable": "CMD_RUN",
+            "default_value": "go run main.go",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|string",
-            "field_type": "text"
-        },
-        {
-            "name": "Run Mode",
-            "description": "Choose between 'run' (direct execution) or 'build' (compile then run).",
-            "env_variable": "GO_RUN_MODE",
-            "default_value": "run",
-            "user_viewable": true,
-            "user_editable": true,
-            "rules": "required|string|in:run,build",
             "field_type": "text"
         },
         {
