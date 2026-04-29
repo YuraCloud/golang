@@ -15,6 +15,7 @@ export GOGC=100
 
 echo -e ":/home/container$ ${MODIFIED_STARTUP}"
 
-# THE FIX: Use eval with exec to ensure the application BECOMES PID 1
-# This is the only way to ensure signals (Stop/Restart) work 100% of the time.
-eval "exec ${MODIFIED_STARTUP}"
+# Run the Server
+# We remove 'exec' from here because the startup command might contain logic (if/then).
+# Instead, the 'exec' should be inside the startup command itself, before the final application call.
+eval "${MODIFIED_STARTUP}"
