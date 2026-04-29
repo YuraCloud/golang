@@ -4,37 +4,34 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2026-04-29T16:16:00+00:00",
-    "name": "Golang Custom",
+    "exported_at": "2024-06-02T14:43:56+00:00",
+    "name": "Golang Custom (Optimized)",
     "author": "antigravity@google.com",
-    "description": "Custom Golang egg for running Go apps with optimization and support for running, stopping, and restarting.",
-    "features": [],
+    "description": "Production-ready Golang egg with optimized build, proper port handling, and efficient startup.",
+    "features": null,
     "docker_images": {
         "ghcr.io/yuracloud/golang:latest": "ghcr.io/yuracloud/golang:latest"
     },
     "file_denylist": [],
-    "startup": "if [ -f go.mod ]; then go mod tidy; fi; if [ -f ${MAIN_FILE} ]; then go build -o app ${MAIN_FILE} && ./app; else ./app; fi",
+    "startup": "if [ -f ${MAIN_FILE} ]; then go build -ldflags='-s -w' -o app ${MAIN_FILE}; fi; if [ -f app ]; then chmod +x app && ./app; else echo 'Build failed: app not found'; exit 1; fi",
     "config": {
-        "files": {},
-        "startup": {
-            "done": "Server started",
-            "userInteraction": []
-        },
-        "logs": {},
-        "stop": "SIGINT"
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"Server started on\"\r\n}",
+        "logs": "{}",
+        "stop": "^C"
     },
     "scripts": {
         "installation": {
             "container": "alpine:3.18",
             "entrypoint": "sh",
-            "script": "#!/bin/sh\napk add --no-cache curl git go\ncd /mnt/server\nif [ ! -f main.go ]; then\ncat << 'EOF' > main.go\npackage main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n)\n\nfunc main() {\n\tfmt.Println(\"Server started on :8080\")\n\thttp.HandleFunc(\"/\", func(w http.ResponseWriter, r *http.Request) {\n\t\tfmt.Fprintf(w, \"Hello from Pterodactyl Golang!\")\n\t})\n\thttp.ListenAndServe(\":8080\", nil)\n}\nEOF\nfi"
+            "script": "#!/bin/sh\napk add --no-cache curl git go\ncd /mnt/server\n\nif [ -f go.mod ]; then\n    go mod tidy\nfi\n\nif [ ! -f main.go ]; then\ncat << 'EOF' > main.go\npackage main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\tport := os.Getenv(\"PORT\")\n\tif port == \"\" {\n\t\tport = os.Getenv(\"SERVER_PORT\")\n\t}\n\tif port == \"\" {\n\t\tport = \"8080\"\n\t}\n\n\tfmt.Printf(\"Server started on :%s\\n\", port)\n\n\thttp.HandleFunc(\"/\", func(w http.ResponseWriter, r *http.Request) {\n\t\tfmt.Fprintf(w, \"Hello from Pterodactyl Golang!\\n\")\n\t})\n\n\thttp.ListenAndServe(\":\"+port, nil)\n}\nEOF\nfi"
         }
     },
     "variables": [
         {
             "name": "Main File",
             "description": "Main Go file to run (e.g. main.go)",
-            "env_var": "MAIN_FILE",
+            "env_variable": "MAIN_FILE",
             "default_value": "main.go",
             "user_viewable": true,
             "user_editable": true,
