@@ -5,9 +5,9 @@
         "update_url": null
     },
     "exported_at": "2024-06-02T14:43:56+00:00",
-    "name": "Golang Custom (Universal)",
+    "name": "Golang Custom (Universal Pro)",
     "author": "antigravity@google.com",
-    "description": "Universal Golang egg with Auto-Update and fully customizable CMD_RUN command.",
+    "description": "Pro-tier Golang egg by YuraCloud. Optimized for performance, auto-updates, and full customization.",
     "features": null,
     "docker_images": {
         "ghcr.io/yuracloud/golang:latest": "ghcr.io/yuracloud/golang:latest"
@@ -18,13 +18,13 @@
         "files": "{}",
         "startup": "{\r\n    \"done\": \"Server started on\"\r\n}",
         "logs": "{}",
-        "stop": "^C"
+        "stop": "SIGINT"
     },
     "scripts": {
         "installation": {
             "container": "alpine:3.18",
             "entrypoint": "sh",
-            "script": "#!/bin/sh\napk add --no-cache curl git go\ncd /mnt/server\n\nif [ -f go.mod ]; then\n    go mod tidy\nfi\n\nif [ ! -f main.go ]; then\ncat << 'EOF' > main.go\npackage main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\tport := os.Getenv(\"PORT\")\n\tif port == \"\" {\n\t\tport = os.Getenv(\"SERVER_PORT\")\n\t}\n\tif port == \"\" {\n\t\tport = \"8080\"\n\t}\n\n\tfmt.Printf(\"Server started on :%s\\n\", port)\n\n\thttp.HandleFunc(\"/\", func(w http.ResponseWriter, r *http.Request) {\n\t\tfmt.Fprintf(w, \"Hello from Pterodactyl Golang!\\n\")\n\t})\n\n\thttp.ListenAndServe(\":\"+port, nil)\n}\nEOF\nfi"
+            "script": "#!/bin/sh\napk add --no-cache curl git go\ncd /mnt/server\n\nif [ -f go.mod ]; then\n    go mod tidy\nfi\n\nif [ ! -f main.go ]; then\ncat << 'EOF' > main.go\npackage main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"os\"\n)\n\nfunc main() {\n\tport := os.Getenv(\"PORT\")\n\tif port == \"\" {\n\t\tport = os.Getenv(\"SERVER_PORT\")\n\t}\n\tif port == \"\" {\n\t\tport = \"8080\"\n\t}\n\n\tfmt.Printf(\"Server started on :%s\\n\", port)\n\n\thttp.HandleFunc(\"/\", func(w http.ResponseWriter, r *http.Request) {\n\t\tfmt.Fprintf(w, \"Hello from Pterodactyl Golang!\\n\")\n\t})\n\n\thttp.ListenAndServe(\":\"+port, nil)\n}\nEOF\nfi\n\n# --- Branding and Information ---\necho \"\"\necho \"==================================================\"\necho \"                  YuraCloud                       \"\necho \"==================================================\"\necho \"Informasi Server:\"\necho \"UUID      : ${P_SERVER_UUID}\"\necho \"CPU Limit : ${P_SERVER_LOCATION} (Location ID)\"\necho \"Port      : ${SERVER_PORT}\"\necho \"Egg Type  : Golang (Optimized)\"\necho \"==================================================\"\necho \"    Terima kasih sudah membeli di YuraCloud!      \"\necho \"==================================================\"\necho \"\""
         }
     },
     "variables": [
