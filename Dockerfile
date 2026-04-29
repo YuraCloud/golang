@@ -1,6 +1,6 @@
 FROM        --platform=$TARGETOS/$TARGETARCH golang:1.23-alpine
 
-RUN         apk add --update --no-cache ca-certificates tzdata \
+RUN         apk add --update --no-cache ca-certificates tzdata git build-base \
             && adduser -D -h /home/container container
 
 # Install govulncheck for security scanning
