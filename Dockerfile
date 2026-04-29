@@ -1,20 +1,11 @@
-FROM golang:1.22-alpine
+FROM        --platform=$TARGETOS/$TARGETARCH golang:1.23-alpine
 
-RUN apk add --no-cache --update \
-    curl \
-    ca-certificates \
-    git \
-    tzdata \
-    iproute2 \
-    bash \
-    build-base
+RUN         apk add --update --no-cache ca-certificates tzdata \
+            && adduser -D -h /home/container container
 
-# Create a user for the container
-RUN adduser -D -h /home/container container
+USER        container
+ENV         USER=container HOME=/home/container
+WORKDIR     /home/container
 
-USER container
-ENV USER=container HOME=/home/container
-WORKDIR /home/container
-
-COPY ./entrypoint.sh /entrypoint.sh
-CMD ["/bin/bash", "/entrypoint.sh"]
+COPY        ./entrypoint.sh /entrypoint.sh
+CMD         [ "/bin/ash", "/entrypoint.sh" ]
