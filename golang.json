@@ -1,36 +1,39 @@
 {
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL",
     "meta": {
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2024-04-29T16:16:00+00:00",
+    "exported_at": "2026-04-29T16:16:00+00:00",
     "name": "Golang Custom",
     "author": "antigravity@google.com",
-    "description": "A custom Golang egg with optimization and support for running, stopping, and restarting Go applications.",
-    "features": null,
+    "description": "Custom Golang egg for running Go apps with optimization and support for running, stopping, and restarting.",
+    "features": [],
     "docker_images": {
         "ghcr.io/yuracloud/golang:latest": "ghcr.io/yuracloud/golang:latest"
     },
     "file_denylist": [],
-    "startup": "if [ -f \"go.mod\" ]; then go mod tidy; fi; go run {{MAIN_FILE}}",
+    "startup": "if [ -f go.mod ]; then go mod tidy; fi; if [ -f ${MAIN_FILE} ]; then go build -o app ${MAIN_FILE} && ./app; else ./app; fi",
     "config": {
-        "files": "{}",
-        "startup": "{\"done\": \"Server started\", \"userInteraction\": []}",
-        "stop": "^C",
-        "logs": "{}",
-        "file_denylist": "[]"
+        "files": {},
+        "startup": {
+            "done": "Server started",
+            "userInteraction": []
+        },
+        "logs": {},
+        "stop": "SIGINT"
     },
     "scripts": {
         "installation": {
-            "container": "alpine:latest",
+            "container": "alpine:3.18",
             "entrypoint": "sh",
-            "script": "#!/bin/sh\napk add --no-cache curl git\ncd /mnt/server\nif [ ! -f main.go ]; then\n    echo \"package main\n\nimport (\n\t\\\"fmt\\\"\n\t\\\"net/http\\\"\n)\n\nfunc main() {\n\tfmt.Println(\\\"Server started on :8080\\\")\n\thttp.HandleFunc(\\\"/\\\", func(w http.ResponseWriter, r *http.Request) {\n\t\tfmt.Fprintf(w, \\\"Hello from Pterodactyl Golang!\\\")\n\t})\n\thttp.ListenAndServe(\\\":8080\\\", nil)\n}\" > main.go\nfi"
+            "script": "#!/bin/sh\napk add --no-cache curl git go\ncd /mnt/server\nif [ ! -f main.go ]; then\ncat << 'EOF' > main.go\npackage main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n)\n\nfunc main() {\n\tfmt.Println(\"Server started on :8080\")\n\thttp.HandleFunc(\"/\", func(w http.ResponseWriter, r *http.Request) {\n\t\tfmt.Fprintf(w, \"Hello from Pterodactyl Golang!\")\n\t})\n\thttp.ListenAndServe(\":8080\", nil)\n}\nEOF\nfi"
         }
     },
     "variables": [
         {
             "name": "Main File",
-            "description": "The main entry point for the Golang application.",
+            "description": "Main Go file to run (e.g. main.go)",
             "env_var": "MAIN_FILE",
             "default_value": "main.go",
             "user_viewable": true,
