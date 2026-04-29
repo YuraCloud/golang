@@ -1,0 +1,42 @@
+{
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2024-04-29T16:16:00+00:00",
+    "name": "Golang Custom",
+    "author": "antigravity@google.com",
+    "description": "A custom Golang egg with optimization and support for running, stopping, and restarting Go applications.",
+    "features": null,
+    "docker_images": {
+        "ghcr.io/yuracloud/golang:latest": "ghcr.io/yuracloud/golang:latest"
+    },
+    "file_denylist": [],
+    "startup": "if [ -f \"go.mod\" ]; then go mod tidy; fi; go run {{MAIN_FILE}}",
+    "config": {
+        "files": "{}",
+        "startup": "{\"done\": \"Server started\", \"userInteraction\": []}",
+        "stop": "^C",
+        "logs": "{}",
+        "file_denylist": "[]"
+    },
+    "scripts": {
+        "installation": {
+            "container": "alpine:latest",
+            "entrypoint": "sh",
+            "script": "#!/bin/sh\napk add --no-cache curl git\ncd /mnt/server\nif [ ! -f main.go ]; then\n    echo \"package main\n\nimport (\n\t\\\"fmt\\\"\n\t\\\"net/http\\\"\n)\n\nfunc main() {\n\tfmt.Println(\\\"Server started on :8080\\\")\n\thttp.HandleFunc(\\\"/\\\", func(w http.ResponseWriter, r *http.Request) {\n\t\tfmt.Fprintf(w, \\\"Hello from Pterodactyl Golang!\\\")\n\t})\n\thttp.ListenAndServe(\\\":8080\\\", nil)\n}\" > main.go\nfi"
+        }
+    },
+    "variables": [
+        {
+            "name": "Main File",
+            "description": "The main entry point for the Golang application.",
+            "env_var": "MAIN_FILE",
+            "default_value": "main.go",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:128",
+            "field_type": "text"
+        }
+    ]
+}
